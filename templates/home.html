@@ -1,0 +1,38 @@
+<html>
+<style>
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+</style>
+
+<head>
+<title>
+A Simple HTML Document
+</title>
+</head>
+<div class="container">
+<body>
+<center><p ><font size = "10">Enter a movie review to check sentiment</font></p>
+
+<form action="{{ url_for('predict') }}" method="post">
+    <input type="text" name="review" style="width: 300px;height:100px;"></br></br>
+    <input type="submit" name="Predict">
+</br>
+</br>
+</br>
+</br>
+
+{% if predictedReview %}
+  {{ predictedReview }}
+{% endif %}
+</form>
+</center>
+</body>
+
+</div>
+</html>
