@@ -1,3 +1,3 @@
 # Google-Cloud-Platform-Deployment
 
-For the purpose of this project, I have used a rather simply ML algorithm Gaussian Naive bayes and trained it with 1000 IMDB reviews dataset. I plan to train and deploy more complicated models like, Word-CNN, BERT in future. The link to the webapp is :https://moviereviewsentimentpredictor.appspot.com/
+I have used the NLP API for sentiment analysis and deployed it on GCP App engine.I have also rendered a simple Flask webapp to visualize the results. The link to the webapp is :https://moviereviewsentimentpredictor.appspot.com/
