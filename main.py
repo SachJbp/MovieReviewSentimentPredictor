@@ -2,19 +2,12 @@ import numpy as np
 from flask import Flask, request, jsonify, render_template, url_for
 import pickle
 import joblib
-#import re
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
-
-nltk.download('stopwords')
+from google.cloud import language
+from google.cloud.language import enums
+from google.cloud.language import types
+import os
 
 app = Flask(__name__)
-classifier = joblib.load('classifier.pkl')
-tfidfVectorizer = joblib.load('tfidfVectorizer.pkl')
-cv=joblib.load('cv.pkl')
 
 @app.route('/')
 def home():
@@ -25,22 +18,20 @@ def home():
 
 @app.route('/predict',methods = ['POST'])
 def predict():
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS']="MovieReviewSentimentPredictor-d0dbcdffcdc7.json"
+
+    client = language.LanguageServiceClient()
+
     review = request.form['review']
-    corpus = []
-    #review = re.sub('[^a-zA-Z]', ' ', review)
-    review = review.lower()
-    #review = review.split()
-    lemmatizer = WordNetLemmatizer()
-    #review = [lemmatizer.lemmatize(word) for word in review if not word in set(stopwords.words('english'))]
-    #review=' '.join(review)
-    corpus.append(review)
-    X=cv.transform(corpus)
-    #x_tfid=np.random.rand(1,2000)
-    x_tfid = tfidfVectorizer.transform(X).toarray()
-    answer = classifier.predict(x_tfid)
-    answer = str(answer[0])
-    #answer=1
-    if answer == '1':
+    
+    # The text to analyze
+    document = types.Document(
+        content=review,
+        type=enums.Document.Type.PLAIN_TEXT)
+
+    # Detects the sentiment of the text
+    sentiment = client.analyze_sentiment(document=document).document_sentiment
+    if sentiment.score>0:
             return render_template('home.html', predictedReview="That looks like a positive review")
     else:
             return render_template('home.html', predictedReview="That looks like a Negative review")
